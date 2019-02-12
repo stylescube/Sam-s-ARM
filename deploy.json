@@ -1,0 +1,44 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "variables": {
+    "webAppName": "region1AppName",
+    "sku": "S1",
+    "location": "West US2",
+    "linuxFxVersion": "php|7.0",
+    "webAppPortalName": "[concat(variables('webAppName'), '-webapp')]",
+    "appServicePlanName": "[concat('AppServicePlan-', variables('webAppName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2017-08-01",
+      "kind": "linux",
+      "name": "[variables('appServicePlanName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [],
+      "sku": {
+        "name": "[variables('sku')]"
+      },
+      "properties":{
+        "reserved":true
+      }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2016-08-01",
+      "kind": "app",
+      "name": "[variables('webAppPortalName')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]",
+        "siteConfig": {
+            "linuxFxVersion": "[variables('linuxFxVersion')]"
+          }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlanName'))]"
+      ]
+    }
+  ]
+}
