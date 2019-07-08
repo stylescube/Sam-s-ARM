@@ -1,0 +1,3 @@
+queue_url: asq://samsinfracustodian.queue.core.windows.net/email
+from_address: sams-custodian@wal-mart.com
+smtp_server: smtp-gw1.wal-mart.com

@@ -1,0 +1,12 @@
+policies:
+  - name: notify
+    resource: azure.cosmosdb
+    actions:
+      - type: notify
+        template: default
+        subject: Hello World
+        to:
+          - venkata.gannamani@samsclub.com
+        transport:
+          type: asq
+          queue: https://samsinfracustodian.queue.core.windows.net/email
