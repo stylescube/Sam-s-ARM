@@ -1,0 +1,29 @@
+policies:
+  - name: cosmosdb-inactive
+    resource: azure.cosmosdb
+    mode:
+      type: azure-periodic
+      schedule: '0 */5 * * * *'
+      provision-options:
+        servicePlan:
+          resourceGroupName: sams-infra-dev-custodian-fns
+          skuName: S2
+          location: East US
+          name: sams-infra-dev-custodian-fns
+          skuTier: Standard
+        storageAccount:
+          name: samsinfracustodian
+          
+    filters:
+      - type: metric
+        metric: TotalRequestUnits
+        op: le
+        aggregation: total
+        threshold: 6000
+        timeframe: 168
+    actions:
+      - type: webhook
+        url: https://dev-samsinfra-alertgator-srvhealth.azurewebsites.net/api/posttoslack
+        batch: false 
+        body: '@'
+     
