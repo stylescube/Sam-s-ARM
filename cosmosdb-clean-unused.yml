@@ -1,0 +1,69 @@
+policies:
+  - name: empty-cosmosdb
+    resource: azure.cosmosdb
+
+    filters:
+      - type: metric
+        metric: TotalRequestUnits
+        op: le
+        aggregation: total
+        threshold: 1000
+        timeframe: 24
+      - type: metric
+        metric: DocumentCount
+        op: eq
+        aggregation: total
+        threshold: 0
+        timeframe: 1
+        interval: PT5M
+      - type: metric
+        metric: DataUsage
+        op: eq
+        aggregation: total
+        threshold: 0
+        timeframe: 1
+        interval: PT5M
+      - "tag:cosmos_empty": absent
+    actions:
+       - type: mark-for-op
+         tag: cosmos_empty
+         op: delete
+         days: 7
+
+  - name: delete-marked-cosmosdb
+    resource: azure.cosmosdb
+    filters:
+      - type: marked-for-op
+        tag: cosmos_empty
+        op: delete
+    actions:
+      - type: delete
+
+  - name: update-marked-cosmosdb
+    resource: azure.cosmosdb
+    filters:
+      - tag:cosmos_empty: not-null
+      - not:
+        - type: metric
+          metric: TotalRequestUnits
+          op: le
+          aggregation: total
+          threshold: 1000
+          timeframe: 24
+        - type: metric
+          metric: DocumentCount
+          op: eq
+          aggregation: total
+          threshold: 0
+          timeframe: 1
+          interval: PT5M
+        - type: metric
+          metric: DataUsage
+          op: eq
+          aggregation: total
+          threshold: 0
+          timeframe: 1
+          interval: PT5M
+    actions:
+        - type: untag
+          tags: ['cosmos_empty']
