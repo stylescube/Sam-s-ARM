@@ -1,18 +1,6 @@
 policies:
   - name: cosmosdb-inactive
     resource: azure.cosmosdb
-    mode:
-      type: azure-periodic
-      schedule: '0 */5 * * * *'
-      provision-options:
-        servicePlan:
-          resourceGroupName: sams-infra-dev-custodian-fns
-          skuName: S2
-          location: East US
-          name: sams-infra-dev-custodian-fns
-          skuTier: Standard
-        storageAccount:
-          name: samsinfracustodian
           
     filters:
       - type: metric
@@ -25,5 +13,30 @@ policies:
       - type: webhook
         url: https://dev-samsinfra-alertgator-srvhealth.azurewebsites.net/api/posttoslack
         batch: false 
-        body: '@'
+        body: >
+          {
+            "schemaVersion": `1.0`,
+            "source": `CUSTOM`,
+            "time_of_event": execution_start,
+            "subscriptionId": account_id,
+            "subscriptionName": account_id,
+            "resourceName": resource.id,
+            "resourceGroupName": resource.resourceGroup,
+            "alertRuleName": policy.name,
+            "resourceId": resource.id,
+            "summary": join('', [`Underutilized CosmosDB: `, resource.name]),
+            "description": join('', [`Underutilized CosmosDB `, resource.name, ` may need cleanup.`]),
+            "severity": "2",
+            "linkToErrorSource": `https://portal.azure.com`,
+            "alertgatorMetrics": {
+              "alertgatorId": execution_id,
+              "eventreceiveTime": execution_start,
+              "eventSendTime": execution_start
+            },
+            "payload": {
+                "Condition_name": join('', [`Custodian Policy Exception: `, policy.name]),
+                "Resource_name": resource.name,
+                "Resource_group": resource.resourceGroup
+              }
+           } 
      
