@@ -1,0 +1,9 @@
+policies:
+  - name: ttl-based-delete
+    resource: azure.armresource
+    filters:
+      - type: marked-for-op
+        tag: ttl
+        op: delete
+    actions:
+      - type: delete
