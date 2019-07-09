@@ -1,0 +1,29 @@
+# Filters out all the users whom have been added to resources who have Owner or Contributor previlages. 
+# We can put an action in here to remove them. This ensures only groups are added to the resources. 
+
+policies:
+   - name: assignment-by-role-and-resource
+     resource: azure.roleassignment
+     filters:
+        - type: value
+          key: properties.principalType #ServicePrincipal, Group, User
+          op: equal
+          value: User
+        - type: value
+          key: properties.scope
+          op: contains
+          value_type: normalize
+          value: resourcegroups
+        - not:
+          - type: value
+            key: properties.scope
+            op: regex
+            value: "^\/subscriptions\/([^\/]+)\/resourceGroups\/([^\/]+)$"
+        - type: role
+          key: properties.roleName
+          op: equal
+          value: Owner
+        - type: role
+          key: properties.roleName
+          op: equal
+          value: Contributor
