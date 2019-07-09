@@ -1,0 +1,18 @@
+policies:
+  - name: storage-firewall
+    resource: azure.storage
+    filters:
+
+      - type: firewall-rules
+        include:
+          - 10.0.0.0/24
+      - type: firewall-rules
+        include:
+          - 128.0.0.1
+      - type: firewall-rules
+        include:
+          - 28.10.1.0/32
+    actions:
+      - type: tag
+        tag: Test
+        value: test
