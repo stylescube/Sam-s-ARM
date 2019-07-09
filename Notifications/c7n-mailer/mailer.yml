@@ -1,3 +1,6 @@
+# c7n-mailer tool configuration to send emails via Sam's SMTP server
+# Reads messages from the Azure Storage Queue
+
 queue_url: asq://samsinfracustodian.queue.core.windows.net/email
 from_address: sams-custodian@wal-mart.com
 smtp_server: smtp-gw1.wal-mart.com

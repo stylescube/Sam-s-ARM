@@ -1,3 +1,6 @@
+# Finds all CosmosDBs with less than 6000 Total Request Units in last 7 days and 
+# calls webhook to create JIRA ticket for cleanup.
+
 policies:
   - name: cosmosdb-inactive
     resource: azure.cosmosdb
