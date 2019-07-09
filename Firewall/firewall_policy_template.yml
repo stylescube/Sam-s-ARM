@@ -1,0 +1,9 @@
+policies:
+  - name: storage-firewall
+    resource: azure.storage
+    filters:
+${firewall_rules}
+    actions:
+      - type: tag
+        tag: Test
+        value: test
