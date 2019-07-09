@@ -1,3 +1,5 @@
+# Send an email with a list of all CosmosDB resources.
+# Puts message to the Azure Storage Queue to be processed by c7n-mailer.
 policies:
   - name: notify
     resource: azure.cosmosdb

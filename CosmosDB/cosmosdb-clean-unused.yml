@@ -1,3 +1,8 @@
+# Set of policies to cleanup all ununsed CosmosDBs.
+#   - Find all unused CosmosDBs & mark them to be deleted in 7 days
+#   - Remove all CosmosDBs marked for delete on a certain day
+#   - Remove cleanup tag if there was an activity in CosmosDB
+
 policies:
   - name: empty-cosmosdb
     resource: azure.cosmosdb
