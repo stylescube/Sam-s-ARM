@@ -1,0 +1,21 @@
+# Returns the list of CosmosDB's with cost greater than 0
+# timeframe:
+#    oneOf:
+#    - enum:
+#      - WeekToDate
+#      - MonthToDate
+#      - YearToDate
+#      - TheLastWeek
+#      - TheLastMonth
+#      - TheLastYear
+#    - minimum: 1
+#      type: number
+
+policies:
+  - name: find-expensive-resources
+    resource: azure.cosmosdb
+    filters:
+      - type: cost
+        timeframe: 1
+        op: ge
+        value: 0
