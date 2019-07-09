@@ -1,4 +1,6 @@
 # Returns the list of CosmosDB's with cost greater than 0
+# custodian-cask report -s=. --format=grid --field Cost='"c7n\u003acost".PreTaxCost' policy.yaml
+
 # timeframe:
 #    oneOf:
 #    - enum:
