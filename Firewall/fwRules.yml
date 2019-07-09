@@ -1,0 +1,40 @@
+# Storage:
+# A useful visualization on non-compliant storage with this policy may be:
+# custodian report  -s sams_temp  sams_temp/firewalls.yml --format=grid
+# --field REQUIRE_HTTPS=properties.supportsHttpsTrafficOnly
+# --field BYPASS=properties.networkAcls.bypass --field DEFAULT_ACTION=properties.networkAcls.defaultAction
+# https://cloudcustodian.io/docs/azure/resources/azure-common-filters.html#azure-common-filters-firewall-rules
+
+policies:
+- name: find_open_firewall_storage
+  description: |
+    Check storage accounts for common network
+    security misconfigurations.
+  resource: azure.storage
+  filters:
+    - not:
+      - type: value
+        key: properties.supportsHttpsTrafficOnly
+        op: equal
+        value: true
+      - type: value
+        key: properties.networkAcls.bypass
+        op: not-in
+        value: AzureServices
+      - type: value
+        key: properties.networkAcls.defaultAction
+        op: equal
+        value: Deny
+      - not:
+        - type: firewall-rules
+          include:
+              - 8.8.8.8
+# Example action to change network rules...
+#  actions:
+#      - type: set-network-rules
+#        default-action: Deny
+#        bypass: [Logging, Metrics] # Options: Logging, Metrics, AzureServices
+#        ip-rules:
+#            - ip-address-or-range: 11.12.13.14
+#            - ip-address-or-range: 21.22.23.24
+# https://cloudcustodian.io/docs/azure/policy/resources/storage.html#actions
